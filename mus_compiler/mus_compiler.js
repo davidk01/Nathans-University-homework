@@ -4,6 +4,8 @@ var end_time = function(init_time, expr) {
   switch (expr.tag) {
     case 'note': // base case
       return init_time + expr.dur;
+    case 'rest': // another base case
+      return init_time + expr.dur;
     case 'seq': // seq case
       return end_time(end_time(init_time, expr.left), expr.right);
     case 'par': // par case
@@ -19,6 +21,8 @@ var compile_aux = function(init_time, expr) {
   switch (expr.tag) {
     case 'note': // base case
       return [{tag: 'note', pitch: expr.pitch, start: init_time, dur: expr.dur}];
+    case 'rest': // another base case
+      return [{tag: 'rest', start: init_time, dur: expr.dur}];
     case 'seq': // seq case
       left = compile_aux(init_time, expr.left);
       right = compile_aux(end_time(init_time, expr.left), expr.right);
