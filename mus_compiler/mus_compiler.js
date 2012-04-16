@@ -15,12 +15,14 @@ var end_time = function(init_time, expr) {
       left = end_time(init_time, expr.left);
       right = end_time(init_time, expr.right);
       return Math.max.apply(null, [left, right]);
+    case 'repeat': // segment repetion
+      return init_time + expr.count * end_time(0, expr.section);
   }
 };
 
 // flattens out the mus expression tree to an array of note objects
 var compile_aux = function(init_time, expr) {
-  var left, right;
+  var left, right, repeat_acc = [], section_dur;
   switch (expr.tag) {
     case 'note': // base case
       return [{tag: 'note', pitch: expr.pitch, start: init_time, dur: expr.dur}];
@@ -34,6 +36,12 @@ var compile_aux = function(init_time, expr) {
       left = compile_aux(init_time, expr.left);
       right = compile_aux(init_time, expr.right);
       return left.concat(right);
+    case 'repeat': // repeat case
+      section_dur = end_time(0, expr.section); // find out the duration of the repeating section
+      for (var i = 0, len = expr.count; i < len; i++) { // accumulate
+        repeat_acc = repeat_acc.concat(compile_aux(init_time + i * section_dur, expr.section));
+      }
+      return repeat_acc;
   }
 };
 
@@ -56,8 +64,8 @@ var compile = function(expr, midi_conversion) {
 };
 
 // some test data
-var melody_mus = 
-    { tag: 'seq',
+var melody_mus = { tag: 'repeat', count: 3,
+    section: { tag: 'seq',
       left: 
        { tag: 'par',
          left: { tag: 'note', pitch: 'c3', dur: 250 },
@@ -65,13 +73,13 @@ var melody_mus =
       right:
        { tag: 'par',
          left: { tag: 'note', pitch: 'd3', dur: 500 },
-         right: { tag: 'note', pitch: 'f4', dur: 250 } } };
+         right: { tag: 'note', pitch: 'f4', dur: 250 } } } };
 var melody_note = [
     { tag: 'note', pitch: 'c3', start: 0, dur: 250 },
     { tag: 'note', pitch: 'g4', start: 0, dur: 500 },
     { tag: 'note', pitch: 'd3', start: 500, dur: 500 },
     { tag: 'note', pitch: 'f4', start: 500, dur: 250 } ];
-    
+console.log(melody_mus);
 console.log(compile(melody_mus));
 console.log(compile(melody_mus, true));
 console.log(melody_note);
