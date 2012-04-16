@@ -1,3 +1,6 @@
+// converts notes to midi numbers
+var note_to_midi_mapper = require('./note_mapping.js').note_to_midi_mapper;
+
 // computes durations of mus expression segments
 var end_time = function(init_time, expr) {
   var left, right;
@@ -34,8 +37,22 @@ var compile_aux = function(init_time, expr) {
   }
 };
 
-var compile = function(expr) {
-  return compile_aux(0, expr);
+// converts the compiled note array to another one in place that has
+// midi pitch numbers instead of notes
+var transform_to_midi = function(notes) {
+  for (var i = 0, len = notes.length; i < len; i++) {
+    notes[i].pitch = note_to_midi_mapper(notes[i].pitch);
+  }
+  return notes;
+};
+
+var compile = function(expr, midi_conversion) {
+  var convert = midi_conversion || false; // see if the user wants the compiled output in terms of midi notes
+  var compiled_notes = compile_aux(0, expr);
+  if (convert) { // convert to midi notes
+    return transform_to_midi(compiled_notes);
+  }
+  return compiled_notes;
 };
 
 // some test data
@@ -56,4 +73,5 @@ var melody_note = [
     { tag: 'note', pitch: 'f4', start: 500, dur: 250 } ];
     
 console.log(compile(melody_mus));
+console.log(compile(melody_mus, true));
 console.log(melody_note);

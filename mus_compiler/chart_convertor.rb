@@ -1,8 +1,8 @@
 open('midi_note_chart', 'r') do |input|
   mapping = input.readlines.map do |line| # figure out what the mappings should be
     split_line = line.strip.split(/ +/)
-    note = split_line[0].downcase
-    midi_number = split_line[1]
+    note = split_line[1].downcase.strip
+    midi_number = split_line[0].strip
     [note, midi_number]
   end
   # convert the mappings to a javascript function which is just a giant
