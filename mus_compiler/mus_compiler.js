@@ -14,7 +14,7 @@ var end_time = function(init_time, expr) {
     case 'par': // par case
       left = end_time(init_time, expr.left);
       right = end_time(init_time, expr.right);
-      return Math.max.apply(null, [left, right]);
+      return Math.max.(left, right);
     case 'repeat': // segment repetion
       return init_time + expr.count * end_time(0, expr.section);
   }
