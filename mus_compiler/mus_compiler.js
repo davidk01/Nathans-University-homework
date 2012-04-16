@@ -57,10 +57,7 @@ var transform_to_midi = function(notes) {
 var compile = function(expr, midi_conversion) {
   var convert = midi_conversion || false; // see if the user wants the compiled output in terms of midi notes
   var compiled_notes = compile_aux(0, expr);
-  if (convert) { // convert to midi notes
-    return transform_to_midi(compiled_notes);
-  }
-  return compiled_notes;
+  return convert ? transform_to_midi(compiled_notes) : compiled_notes;
 };
 
 // some test data
