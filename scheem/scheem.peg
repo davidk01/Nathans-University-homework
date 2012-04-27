@@ -1,0 +1,25 @@
+start = expression
+
+expression = ignored_stuff* expr:list_expression ignored_stuff* {return expr;}
+
+list_expression = atom / regular_list / quoted_list
+
+regular_list = "(" h:atom t:(space+ (atom / regular_list / quoted_list))+ space* ")"
+  {return [h].concat(t.map(function(x){return x[1];}));}
+
+quoted_list = "'" "(" h:atom t:(space+ (atom / quoted_list / regular_list))+ space* ")" 
+  {return ['quote', [h].concat(t.map(function(x){return x[1];}))];}
+
+atom = at:validchars+ {return at.join("");}
+
+validchars = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
+
+comment = ";;" (!newline .)*
+
+delimited_comment = comment newline
+
+newline = [\r\n]
+
+space = [\t ]
+
+ignored_stuff = delimited_comment / space
