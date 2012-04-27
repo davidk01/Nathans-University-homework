@@ -1,6 +1,6 @@
 start = expression
 
-expression = ignored_stuff* expr:list_expression ignored_stuff* {return expr;}
+expression = ignored_stuff* expr:list_expression? ignored_stuff* {return expr;}
 
 list_expression = atom / regular_list / quoted_list
 
@@ -18,8 +18,10 @@ comment = ";;" (!newline .)*
 
 delimited_comment = comment newline
 
+multiline_comment = delimited_comment+
+
 newline = [\r\n]
 
 space = [\t ]
 
-ignored_stuff = delimited_comment / space
+ignored_stuff = multiline_comment / space
