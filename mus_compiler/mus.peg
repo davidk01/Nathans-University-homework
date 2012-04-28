@@ -8,19 +8,8 @@ parallel_expression = l:sequence_expression " "+ "||" " "+ r:parallel_expression
 
 sequence_expression = note_sequence / note
 
-note_sequence = h:note t:(" "+ note)+ {
-  var sequencer = function(seq) {
-    switch(seq.length) {
-      case 2:
-        return {tag:'seq', left:seq[0], right:seq[1]};
-      default:
-        return {tag:'seq',left:seq.shift(),right:sequencer(seq)};
-    }
-  };
-  var tail = t.map(function(x){return x[1];});
-  tail.unshift(h);
-  return sequencer(tail);
-}
+note_sequence = h:note " " t:note_sequence 
+  {return {tag:'seq',left:h,right:t}} / note
 
 note = n:[cdefgab] a:accidental? o:octave_shift d:duration 
   {return {tag:'note', pitch:(n + a + o), dur:d};} / rest
