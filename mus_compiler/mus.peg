@@ -1,7 +1,7 @@
 start = sequence_block
 
 repeat = "|: " s:sequence_block " :|" c:number? 
-  {return {tag:'repeat', section:s, count:(c || 1)};}
+  {return {tag:'repeat', section:s, count:(c || 2)};}
 
 sequence_block = l:parallel_sequence [\r\n] [\r\n] r:sequence_block 
   {return {tag:'seq', left:l, right:r};} / parallel_sequence
