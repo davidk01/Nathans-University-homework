@@ -3,7 +3,7 @@ start = general_seq_expression
 general_seq_expression = l:parallel_expression " "+ "&&" " "+ r:general_seq_expression 
   {return {tag:'seq',left:l,right:r};} / parallel_expression
 
-parallel_expression = l:sequence_expression " || " r:parallel_expression 
+parallel_expression = l:sequence_expression " "+ "||" " "+ r:parallel_expression 
   {return {tag:'par',left:l,right:r};} / sequence_expression
 
 sequence_expression = note_sequence / note
