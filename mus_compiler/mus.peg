@@ -1,4 +1,9 @@
-start = multiblock_par_expression
+start = repeat_or_regular
+
+repeat_or_regular = repeat_expression / multiblock_par_expression
+
+repeat_expression = "|: " exp:multiblock_par_expression " :|" c:number?
+  {return {tag:'repeat',section:exp,count:(c || 1)};}
 
 multiblock_par_expression = l:multiline_seq_expression [\r\n][\r\n] r:multiblock_par_expression 
   {return {tag:'par',left:l,right:r};} / multiline_seq_expression
@@ -14,7 +19,7 @@ parallel_expression = l:sequence_expression " "+ "||" " "+ r:parallel_expression
 
 sequence_expression = note_sequence / note
 
-note_sequence = h:note " " t:note_sequence 
+note_sequence = h:note " " t:(note_sequence / repeat_expression)
   {return {tag:'seq',left:h,right:t};} / note
 
 note = n:[cdefgab] a:accidental? o:octave_shift d:duration 
@@ -26,4 +31,6 @@ octave_shift = [0-8]
 
 accidental = [#b]
 
-duration = "[" a:[1-9] b:[0-9]* "]" {return parseInt(a + b.join(""));}
+number = a:[1-9] b:[0-9]* {return parseInt(a + b.join(""));}
+
+duration = "[" d:number "]" {return d;}
