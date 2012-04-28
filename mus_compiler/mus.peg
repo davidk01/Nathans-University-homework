@@ -1,0 +1,34 @@
+start = general_seq_expression
+
+general_seq_expression = l:parallel_expression " "+ "&&" " "+ r:general_seq_expression 
+  {return {tag:'seq',left:l,right:r};} / parallel_expression
+
+parallel_expression = l:sequence_expression " || " r:parallel_expression 
+  {return {tag:'par',left:l,right:r};} / sequence_expression
+
+sequence_expression = note_sequence / note
+
+note_sequence = h:note t:(" "+ note)+ {
+  var sequencer = function(seq) {
+    switch(seq.length) {
+      case 2:
+        return {tag:'seq', left:seq[0], right:seq[1]};
+      default:
+        return {tag:'seq',left:seq.shift(),right:sequencer(seq)};
+    }
+  };
+  var tail = t.map(function(x){return x[1];});
+  tail.unshift(h);
+  return sequencer(tail);
+}
+
+note = n:[cdefgab] a:accidental? o:octave_shift d:duration 
+  {return {tag:'note', pitch:(n + a + o), dur:d};} / rest
+
+rest = "_" d:duration {return {tag:'rest', dur:d};}
+
+octave_shift = [0-8]
+
+accidental = [#b]
+
+duration = "[" a:[1-9] b:[0-9]* "]" {return parseInt(a + b.join(""));}
