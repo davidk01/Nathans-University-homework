@@ -1,4 +1,7 @@
-start = general_seq_expression
+start = multiline_seq_expression
+
+multiline_seq_expression = l:general_seq_expression [\r\n] r:multiline_seq_expression 
+  {return {tag:'seq',left:l,right:r};} / general_seq_expression
 
 general_seq_expression = l:parallel_expression " "+ "&&" " "+ r:general_seq_expression 
   {return {tag:'seq',left:l,right:r};} / parallel_expression
@@ -9,7 +12,7 @@ parallel_expression = l:sequence_expression " "+ "||" " "+ r:parallel_expression
 sequence_expression = note_sequence / note
 
 note_sequence = h:note " " t:note_sequence 
-  {return {tag:'seq',left:h,right:t}} / note
+  {return {tag:'seq',left:h,right:t};} / note
 
 note = n:[cdefgab] a:accidental? o:octave_shift d:duration 
   {return {tag:'note', pitch:(n + a + o), dur:d};} / rest
