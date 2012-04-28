@@ -1,4 +1,7 @@
-start = multiline_seq_expression
+start = multiblock_par_expression
+
+multiblock_par_expression = l:multiline_seq_expression [\r\n][\r\n] r:multiblock_par_expression 
+  {return {tag:'par',left:l,right:r};} / multiline_seq_expression
 
 multiline_seq_expression = l:general_seq_expression [\r\n] r:multiline_seq_expression 
   {return {tag:'seq',left:l,right:r};} / general_seq_expression
