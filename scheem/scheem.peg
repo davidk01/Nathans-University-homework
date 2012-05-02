@@ -10,11 +10,13 @@ regular_list = "(" h:atom t:(space+ (atom / regular_list / quoted_list))+ space*
 quoted_list = "'" "(" h:atom t:(space+ (atom / quoted_list / regular_list))+ space* ")" 
   {return ['quote', [h].concat(t.map(function(x){return x[1];}))];}
 
-atom = at:validchars+ {return at.join("");}
+atom = n:number {return n;} / at:validchars+ {return at.join("");}
 
 validchars = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
 
 comment = ";;" (!newline .)*
+
+number = z:"0" {return 0;} / h:[1-9] t:[0-9]* {return parseInt(h + t.join(""));}
 
 delimited_comment = comment newline
 
