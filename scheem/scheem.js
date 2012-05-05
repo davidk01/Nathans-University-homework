@@ -19,8 +19,13 @@ var evalScheem = function(expr, env) {
     case '/':
       return evalScheem(expr[1], env) / evalScheem(expr[2], env);
     case '*':
-      return evalScheem(expr[1], env) / evalScheem(expr[2], env);
+      return evalScheem(expr[1], env) * evalScheem(expr[2], env);
     case 'define':
+      // throw an error if a variable has already been defined
+      if (env[expr[1]]) {
+        throw "Variable " + expr[1] + " has already been defined.";
+      }
+      return (env[expr[1]] = evalScheem(expr[2], env));
     case 'set!': 
       // throw an error if set! is called on a variable that doesn't exist in env
       if (!env[expr[1]]) {
