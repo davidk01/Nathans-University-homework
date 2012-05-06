@@ -144,14 +144,12 @@ var evalScheem = function(expr, env) {
       return evalScheem(expr[1], env) === '#t' ? 
         evalScheem(expr[2], env) : evalScheem(expr[3], env);
     default: // not a special form so must be a function application form
-      var func = evalScheem(expr[0], env);
-      expr.shift();
-      var args = expr.map(function(x) {return evalScheem(x, env);});
-      var result = func.apply(null, args);
-      args.shift()
-      while (typeof result === 'function' && args.length !== 0) {
-        result = result.apply(null, args);
-        args.shift();
+      var func_and_args = expr.map(function(x) {return evalScheem(x, env);});
+      var func = func_and_args[0];
+      var i = 1;
+      var result = func.call(null, func_and_args[i]);
+      while (typeof result === 'function' && ++i < func_and_args.length) {
+        result = result.call(null, func_and_args[i]);
       }
       return result;
   }

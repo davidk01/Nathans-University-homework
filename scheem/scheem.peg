@@ -12,7 +12,7 @@ quoted_list = "'" "(" h:atom t:(space+ (atom / quoted_list / regular_list))* spa
 
 atom = n:number {return n;} / at:validchars+ {return at.join("");} / regular_list / quoted_list
 
-validchars = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
+validchars = [\<\>0-9a-zA-Z_?!+\-=@#$%^&*/.]
 
 comment = ";;" (!newline .)*
 
