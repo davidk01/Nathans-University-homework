@@ -1,24 +1,24 @@
 var initial_env = {
   name: '+',
-  value: function(x) {return function(y) {return x + y;}},
+  value: function(x) {return function(y) {return x + y;};},
   outer: {
     name: '-',
-    value: function(x,y) {return x - y;},
+    value: function(x) {return function(y) {return x - y;};},
     outer: {
       name: '/',
-      value: function(x,y) {return x / y;},
+      value: function(x) {return function(y) {return x / y;};},
       outer: {
         name: '*',
-        value: function(x,y) {return x * y;},
+        value: function(x) {return function(y) {return x * y;};},
         outer: {
           name: '=',
-          value: function(x,y) {return x === y ? '#t' : '#f';},
+          value: function(x) {return function(y) {return x === y ? '#t' : '#f';};},
           outer: {
             name: '<',
-            value: function(x,y) {return x < y ? '#t' : '#f';},
+            value: function(x) {return function(y) {return x < y ? '#t' : '#f';};},
             outer: {
               name: '>',
-              value: function(x,y) {return x > y ? '#t' : '#f';},
+              value: function(x) {return function(y) {return x > y ? '#t' : '#f';};},
               outer: null
             }
           }
