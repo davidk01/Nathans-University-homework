@@ -155,7 +155,7 @@ var evalScheem = function(expr, env) {
       expr.shift();
       var args = expr.map(function(x) {return evalScheem(x, env);});
       var result = func.apply(null, args);
-      while (typeof result === 'function') {
+      while (typeof result === 'function' && args !== []) {
         args.shift();
         result = result.apply(null, args);
       }
