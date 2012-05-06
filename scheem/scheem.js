@@ -2,31 +2,34 @@ var initial_env = {
   name: '+',
   value: function(x) {return function(y) {return x + y;};},
   outer: {
-    name: '-',
-    value: function(x) {return function(y) {return x - y;};},
-    outer: {
-      name: '/',
-      value: function(x) {return function(y) {return x / y;};},
-      outer: {
-        name: '*',
-        value: function(x) {return function(y) {return x * y;};},
-        outer: {
-          name: '=',
-          value: function(x) {return function(y) {return x === y ? '#t' : '#f';};},
-          outer: {
-            name: '<',
-            value: function(x) {return function(y) {return x < y ? '#t' : '#f';};},
-            outer: {
-              name: '>',
-              value: function(x) {return function(y) {return x > y ? '#t' : '#f';};},
-              outer: null
-            }
-          }
-        }
-      }
-    }
-  }
-};
+  name: '-',
+  value: function(x) {return function(y) {return x - y;};},
+  outer: {
+  name: '/',
+  value: function(x) {return function(y) {return x / y;};},
+  outer: {
+  name: '*',
+  value: function(x) {return function(y) {return x * y;};},
+  outer: {
+  name: '=',
+  value: function(x) {return function(y) {return x === y ? '#t' : '#f';};},
+  outer: {
+  name: '<',
+  value: function(x) {return function(y) {return x < y ? '#t' : '#f';};},
+  outer: {
+  name: '>',
+  value: function(x) {return function(y) {return x > y ? '#t' : '#f';};},
+  outer: {
+  name: 'car',
+  value: function(x) {return x[0];},
+  outer: {
+  name: 'cdr',
+  value: function(x) {x.shift(); return x;},
+  outer: {
+  name: 'cons',
+  value: function(x) {return function(y) {y.unshift(x); return y;};},
+  outer: null
+}}}}}}}}}};
 
 // used when we encounter define
 var add_binding = function(env, v, val) { // used in define forms to add a new binding
@@ -94,7 +97,8 @@ var evalScheem = function(expr, env) {
         return function() {
           return evalScheem(expr[1], env);
         };
-      } // otherwise we do have variables so we first transform everything to nested lambda-one forms
+      } 
+      // otherwise we do have variables so we first transform everything to nested lambda-one forms
       var converted = lambda_to_lambda_one(expr[1], expr[2]);
       return evalScheem(converted, env);
     case 'lambda-one': // (lambda-one var (body form))
@@ -136,17 +140,6 @@ var evalScheem = function(expr, env) {
         evalScheem(expr[i], env);
       }
       return evalScheem(expr[len], env);
-    case 'cons': // list append
-      var head = evalScheem(expr[1], env);
-      var rest = evalScheem(expr[2], env);
-      rest.unshift(head);
-      return rest;
-    case 'car': // head
-      return evalScheem(expr[1], env)[0];
-    case 'cdr': // tail
-      var result = evalScheem(expr[1], env);
-      result.shift();
-      return result;
     case 'if':
       return evalScheem(expr[1], env) === '#t' ? 
         evalScheem(expr[2], env) : evalScheem(expr[3], env);
