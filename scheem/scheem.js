@@ -1,6 +1,6 @@
 var initial_env = {
   name: '+',
-  value: function(x,y) {return x + y;},
+  value: function(x) {return function(y) {return x + y;}},
   outer: {
     name: '-',
     value: function(x,y) {return x - y;},
@@ -155,9 +155,10 @@ var evalScheem = function(expr, env) {
       expr.shift();
       var args = expr.map(function(x) {return evalScheem(x, env);});
       var result = func.apply(null, args);
-      while (typeof result === 'function' && args !== []) {
-        args.shift();
+      args.shift()
+      while (typeof result === 'function' && args.length !== 0) {
         result = result.apply(null, args);
+        args.shift();
       }
       return result;
   }
