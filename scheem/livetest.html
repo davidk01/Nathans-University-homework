@@ -32,7 +32,7 @@
             var parsed = scheem.parse(user_text);
             log_console('Parsed: ' + JSON.stringify(parsed));
             try {
-                var result = evalScheem(parsed, {});
+                var result = evalScheem(parsed, null);
                 log_console('Result: ' + JSON.stringify(result));
             }
             catch(e) {

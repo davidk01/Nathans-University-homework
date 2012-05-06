@@ -471,6 +471,12 @@ scheem = (function(){
           if (result0 === null) {
             pos = pos0;
           }
+          if (result0 === null) {
+            result0 = parse_regular_list();
+            if (result0 === null) {
+              result0 = parse_quoted_list();
+            }
+          }
         }
         return result0;
       }
