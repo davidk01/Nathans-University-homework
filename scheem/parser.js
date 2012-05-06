@@ -49,6 +49,7 @@ scheem = (function(){
         "multiline_comment": parse_multiline_comment,
         "newline": parse_newline,
         "space": parse_space,
+        "general_space": parse_general_space,
         "ignored_stuff": parse_ignored_stuff
       };
       
@@ -183,12 +184,12 @@ scheem = (function(){
           if (result1 !== null) {
             result2 = [];
             pos2 = pos;
-            result4 = parse_space();
+            result4 = parse_general_space();
             if (result4 !== null) {
               result3 = [];
               while (result4 !== null) {
                 result3.push(result4);
-                result4 = parse_space();
+                result4 = parse_general_space();
               }
             } else {
               result3 = null;
@@ -214,12 +215,12 @@ scheem = (function(){
             while (result3 !== null) {
               result2.push(result3);
               pos2 = pos;
-              result4 = parse_space();
+              result4 = parse_general_space();
               if (result4 !== null) {
                 result3 = [];
                 while (result4 !== null) {
                   result3.push(result4);
-                  result4 = parse_space();
+                  result4 = parse_general_space();
                 }
               } else {
                 result3 = null;
@@ -245,10 +246,10 @@ scheem = (function(){
             }
             if (result2 !== null) {
               result3 = [];
-              result4 = parse_space();
+              result4 = parse_general_space();
               while (result4 !== null) {
                 result3.push(result4);
-                result4 = parse_space();
+                result4 = parse_general_space();
               }
               if (result3 !== null) {
                 if (input.charCodeAt(pos) === 41) {
@@ -321,12 +322,12 @@ scheem = (function(){
             if (result2 !== null) {
               result3 = [];
               pos2 = pos;
-              result5 = parse_space();
+              result5 = parse_general_space();
               if (result5 !== null) {
                 result4 = [];
                 while (result5 !== null) {
                   result4.push(result5);
-                  result5 = parse_space();
+                  result5 = parse_general_space();
                 }
               } else {
                 result4 = null;
@@ -352,12 +353,12 @@ scheem = (function(){
               while (result4 !== null) {
                 result3.push(result4);
                 pos2 = pos;
-                result5 = parse_space();
+                result5 = parse_general_space();
                 if (result5 !== null) {
                   result4 = [];
                   while (result5 !== null) {
                     result4.push(result5);
-                    result5 = parse_space();
+                    result5 = parse_general_space();
                   }
                 } else {
                   result4 = null;
@@ -383,10 +384,10 @@ scheem = (function(){
               }
               if (result3 !== null) {
                 result4 = [];
-                result5 = parse_space();
+                result5 = parse_general_space();
                 while (result5 !== null) {
                   result4.push(result5);
-                  result5 = parse_space();
+                  result5 = parse_general_space();
                 }
                 if (result4 !== null) {
                   if (input.charCodeAt(pos) === 41) {
@@ -720,6 +721,16 @@ scheem = (function(){
           if (reportFailures === 0) {
             matchFailed("[\\t ]");
           }
+        }
+        return result0;
+      }
+      
+      function parse_general_space() {
+        var result0;
+        
+        result0 = parse_space();
+        if (result0 === null) {
+          result0 = parse_newline();
         }
         return result0;
       }
