@@ -4,10 +4,10 @@ expression = ignored_stuff* expr:list_expression? ignored_stuff* {return expr;}
 
 list_expression = atom / regular_list / quoted_list
 
-regular_list = "(" h:atom t:(space+ (atom / regular_list / quoted_list))+ space* ")"
+regular_list = "(" h:atom t:(space+ (atom / regular_list / quoted_list))* space* ")"
   {return [h].concat(t.map(function(x){return x[1];}));}
 
-quoted_list = "'" "(" h:atom t:(space+ (atom / quoted_list / regular_list))+ space* ")" 
+quoted_list = "'" "(" h:atom t:(space+ (atom / quoted_list / regular_list))* space* ")" 
   {return ['quote', [h].concat(t.map(function(x){return x[1];}))];}
 
 atom = n:number {return n;} / at:validchars+ {return at.join("");} / regular_list / quoted_list

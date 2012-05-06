@@ -154,7 +154,12 @@ var evalScheem = function(expr, env) {
       var func = evalScheem(expr[0], env);
       expr.shift();
       var args = expr.map(function(x) {return evalScheem(x, env);});
-      return func.apply(null, args);
+      var result = func.apply(null, args);
+      while (typeof result === 'function') {
+        args.shift();
+        result = result.apply(null, args);
+      }
+      return result;
   }
 };
 

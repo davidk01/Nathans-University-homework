@@ -181,6 +181,7 @@ scheem = (function(){
         if (result0 !== null) {
           result1 = parse_atom();
           if (result1 !== null) {
+            result2 = [];
             pos2 = pos;
             result4 = parse_space();
             if (result4 !== null) {
@@ -210,42 +211,37 @@ scheem = (function(){
               result3 = null;
               pos = pos2;
             }
-            if (result3 !== null) {
-              result2 = [];
-              while (result3 !== null) {
-                result2.push(result3);
-                pos2 = pos;
-                result4 = parse_space();
-                if (result4 !== null) {
-                  result3 = [];
-                  while (result4 !== null) {
-                    result3.push(result4);
-                    result4 = parse_space();
-                  }
-                } else {
-                  result3 = null;
+            while (result3 !== null) {
+              result2.push(result3);
+              pos2 = pos;
+              result4 = parse_space();
+              if (result4 !== null) {
+                result3 = [];
+                while (result4 !== null) {
+                  result3.push(result4);
+                  result4 = parse_space();
                 }
-                if (result3 !== null) {
-                  result4 = parse_atom();
+              } else {
+                result3 = null;
+              }
+              if (result3 !== null) {
+                result4 = parse_atom();
+                if (result4 === null) {
+                  result4 = parse_regular_list();
                   if (result4 === null) {
-                    result4 = parse_regular_list();
-                    if (result4 === null) {
-                      result4 = parse_quoted_list();
-                    }
+                    result4 = parse_quoted_list();
                   }
-                  if (result4 !== null) {
-                    result3 = [result3, result4];
-                  } else {
-                    result3 = null;
-                    pos = pos2;
-                  }
+                }
+                if (result4 !== null) {
+                  result3 = [result3, result4];
                 } else {
                   result3 = null;
                   pos = pos2;
                 }
+              } else {
+                result3 = null;
+                pos = pos2;
               }
-            } else {
-              result2 = null;
             }
             if (result2 !== null) {
               result3 = [];
@@ -323,6 +319,7 @@ scheem = (function(){
           if (result1 !== null) {
             result2 = parse_atom();
             if (result2 !== null) {
+              result3 = [];
               pos2 = pos;
               result5 = parse_space();
               if (result5 !== null) {
@@ -352,42 +349,37 @@ scheem = (function(){
                 result4 = null;
                 pos = pos2;
               }
-              if (result4 !== null) {
-                result3 = [];
-                while (result4 !== null) {
-                  result3.push(result4);
-                  pos2 = pos;
-                  result5 = parse_space();
-                  if (result5 !== null) {
-                    result4 = [];
-                    while (result5 !== null) {
-                      result4.push(result5);
-                      result5 = parse_space();
-                    }
-                  } else {
-                    result4 = null;
+              while (result4 !== null) {
+                result3.push(result4);
+                pos2 = pos;
+                result5 = parse_space();
+                if (result5 !== null) {
+                  result4 = [];
+                  while (result5 !== null) {
+                    result4.push(result5);
+                    result5 = parse_space();
                   }
-                  if (result4 !== null) {
-                    result5 = parse_atom();
+                } else {
+                  result4 = null;
+                }
+                if (result4 !== null) {
+                  result5 = parse_atom();
+                  if (result5 === null) {
+                    result5 = parse_quoted_list();
                     if (result5 === null) {
-                      result5 = parse_quoted_list();
-                      if (result5 === null) {
-                        result5 = parse_regular_list();
-                      }
+                      result5 = parse_regular_list();
                     }
-                    if (result5 !== null) {
-                      result4 = [result4, result5];
-                    } else {
-                      result4 = null;
-                      pos = pos2;
-                    }
+                  }
+                  if (result5 !== null) {
+                    result4 = [result4, result5];
                   } else {
                     result4 = null;
                     pos = pos2;
                   }
+                } else {
+                  result4 = null;
+                  pos = pos2;
                 }
-              } else {
-                result3 = null;
               }
               if (result3 !== null) {
                 result4 = [];

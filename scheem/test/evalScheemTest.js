@@ -67,7 +67,7 @@ suite('set!', function() {
     var ast = parse("(set! x 1)");
     assert.throws(function() {
       evalScheem(ast, null);
-    }, /string/, "'set!' called on an undefined variable: x.");
+    }, "'set!' called on an undefined variable: x.");
   });
 });
 
@@ -81,5 +81,12 @@ suite('lambda-one', function() {
   });
   test('lambda-one that returns a lambda-one', function() {
     helper_function("(let-one l (lambda-one x (lambda-one y (+ x y))) ((l 5) 5))", 10);
+  });
+});
+
+// various lambda tests
+suite('lambda', function() {
+  test('no arguments', function() {
+    helper_function("((lambda (+ 5 5))", 10);
   });
 });
