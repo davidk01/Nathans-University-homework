@@ -9,7 +9,7 @@ if (typeof module !== 'undefined') {
     var assert = chai.assert;
 }
 
-// eval tests that bypass the parser
+// simple eval tests for quote
 suite('quote', function() {
     test('a number', function() {
         assert.deepEqual(
@@ -109,6 +109,29 @@ suite('lambda', function() {
   });
   test('recursion', function() {
     helper_function("(let-one l (define sum (lambda (x acc) (if (= x 0) acc (sum (- x 1) (+ acc x))))) (sum 3 0))", 6);
+  });
+  test('map', function() {
+    helper_function(
+    "(begin \
+      (define map \
+        (lambda (fn lst) (if (= 0 (length lst)) lst (cons (fn (car lst)) (map fn (cdr lst)))))) \
+      (define mapper \
+        (lambda x (* 2 x))) \
+      (map mapper '(1 2 3)))", [2,4,6]);
+  });
+  test('factorial', function() {
+    helper_function(
+    "(begin \
+       (define factorial \
+         (lambda (x acc) (if (= x 1) acc (factorial (- x 1) (* x acc))))) \
+       (factorial 4 1))", 24);
+  });
+  test('list reverse', function() {
+    helper_function(
+    "(begin \
+       (define rev_list \
+         (lambda (lst acc) (if (= 0 (length lst)) acc (rev_list (cdr lst) (cons (car lst) acc))))) \
+       (rev_list '(1 2 3) (cdr '(1))))", [3,2,1])
   });
 });
 

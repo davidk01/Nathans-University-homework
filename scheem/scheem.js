@@ -24,11 +24,21 @@ var initial_env = {
   value: function(x) {return x[0];},
   outer: {
   name: 'cdr',
-  value: function(x) {x.shift(); return x;},
+  value: function(x) {
+    var acc = [];
+    for (var i = 1, l = x.length; i < l; i++) {
+      acc.push(x[i]);
+    }
+    return acc;
+  },
   outer: {
   name: 'cons',
   value: function(x) {return function(y) {y.unshift(x); return y;};},
+  outer: {
+  name: 'length',
+  value: function(x) {return x.length;},
   outer: null
+  }
 }}}}}}}}}};
 
 // used when we encounter define
