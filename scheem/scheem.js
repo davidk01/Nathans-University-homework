@@ -153,11 +153,10 @@ var evalScheem = function(expr, env) {
         evalScheem(expr[2], env) : evalScheem(expr[3], env);
     default: // not a special form so must be a function application form
       var func_and_args = expr.map(function(x) {return evalScheem(x, env);});
-      var func = func_and_args[0];
-      var i = 1;
-      var result = func.call(null, func_and_args[i]);
-      while (typeof result === 'function' && ++i < func_and_args.length) {
-        result = result.call(null, func_and_args[i]);
+      var func = func_and_args[0], result = func(func_and_args[1]);
+      var i = 1, len = func_and_args.length;
+      while (typeof result === 'function' && ++i < len) {
+        result = result(func_and_args[i]);
       }
       return result;
   }
