@@ -33,13 +33,12 @@ var initial_env = {
   },
   outer: {
   name: 'cons',
-  value: function(x) {return function(y) {y.unshift(x); return y;};},
+  value: function(x) {return function(y) {return [x].concat(y);};},
   outer: {
   name: 'length',
   value: function(x) {return x.length;},
   outer: null
-  }
-}}}}}}}}}};
+}}}}}}}}}}};
 
 // used when we encounter define
 var add_binding = function(env, v, val) { // used in define forms to add a new binding
@@ -145,8 +144,7 @@ var evalScheem = function(expr, env) {
       }
       return update(env, expr[1], evalScheem(expr[2], env));
     case 'begin':
-      expr.shift();
-      for (var i = 0, len = expr.length - 1; i < len; i++) {
+      for (var i = 1, len = expr.length - 1; i < len; i++) {
         evalScheem(expr[i], env);
       }
       return evalScheem(expr[len], env);
