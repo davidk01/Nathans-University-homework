@@ -1,0 +1,57 @@
+ws = [ \t\n]*
+
+expression = expr:comparative {return expr;}
+
+comp_op = "<=" / ">=" / "!=" / "==" / "<" / ">"
+
+comparative = l:additive ws op:comp_op ws r:comparative
+  {return {tag:op, left:l, right:r};} / additive
+  
+additive_op = "+" / "-"
+
+additive = l:multiplicative ws op:additive_op ws r:additive
+  {return {tag:op, left:l, right:r};} / multiplicative
+
+mult_op = "*" / "/"
+
+multiplicative = l:primary ws op:mult_op ws r:multiplicative
+  {return {tag:op, left:l, right:r};} / primary
+
+statement = expr:expression ";" ws {return {tag:"ignore", body:expr};}
+  / v:identifier ws ":=" ws expr:expression ";" ws {return {tag:":=", left:v, right:expr};}
+  / "define " ws v:identifier ws "()" ws "{" ws body:statements ws "}" ws
+    {return {tag:"define", name:v,args:[], body:body};}
+  / "define " ws v:identifier ws "(" args:ident_list ")" ws "{" ws body:statements ws "}" ws
+    {return {tag:"define", name:v, args:args, body:body};}
+  / "var" ws v:identifier ws ";" ws {return {tag:"var", name:v};}
+  / "if" ws "(" expr:expression ")" ws "{" ws body:statements ws "}" ws 
+    {return {tag:"if", expr:expr, body:body};}
+  / "repeat" ws "(" expr:expression ")" ws "{" ws body:statements ws "}" ws
+    {return {tag:"repeat", expr:expr, body:body};}
+
+comma_ident = "," ws ident:identifier {return ident;}
+
+ident_list = first:identifier ws rest:comma_ident* {return [first].concat(rest);}
+
+statements = statement*
+
+primary = number / v:identifier {return {tag:"ident", name:v};}
+  / v:identifier "()" {return {tag:"call", name:v, args:[]};}
+  / v:identifier "(" args:arglist ") {return {tag:"call", name:v, args:args};}
+  / "(" ws expr:expression ws ")" {return expr;}
+
+comma_expression = "," ws expr:expression {return expr;}
+
+arglist = first:expression rest:comma_expression* {return [first].concat(rest);}
+
+number_frac = "." nums:[0-9]* {return "." + nums.join('');}
+
+number = sign:"-"? nums:[0-9]+ frac:number_frac? 
+  {return parseFloat(sign + nums.join('') + frac);}
+  
+validfirstchar = [a-zA-Z_]
+
+validchar = [0-9a-zA-Z_]
+
+identifier = firstchar:validfirstchar chars:validchar*
+  {return firstchar + chars.join('');}
