@@ -37,6 +37,7 @@ Tortoise = (function(){
      */
     parse: function(input, startRule) {
       var parseFunctions = {
+        "start": parse_start,
         "ws": parse_ws,
         "expression": parse_expression,
         "comp_op": parse_comp_op,
@@ -64,7 +65,7 @@ Tortoise = (function(){
           throw new Error("Invalid rule name: " + quote(startRule) + ".");
         }
       } else {
-        startRule = "ws";
+        startRule = "start";
       }
       
       var pos = 0;
@@ -110,6 +111,34 @@ Tortoise = (function(){
         }
         
         rightmostFailuresExpected.push(failure);
+      }
+      
+      function parse_start() {
+        var result0, result1;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = parse_ws();
+        if (result0 !== null) {
+          result1 = parse_statements();
+          if (result1 !== null) {
+            result0 = [result0, result1];
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, seq) {return seq;})(pos0, result0[1]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        return result0;
       }
       
       function parse_ws() {

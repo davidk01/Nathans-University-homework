@@ -1,3 +1,5 @@
+start = ws seq:statements {return seq;}
+
 ws = [ \t\n]*
 
 expression = expr:comparative {return expr;}
