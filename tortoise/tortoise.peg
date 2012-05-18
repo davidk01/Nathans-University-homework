@@ -37,7 +37,7 @@ statements = statement*
 
 primary = number / v:identifier {return {tag:"ident", name:v};}
   / v:identifier "()" {return {tag:"call", name:v, args:[]};}
-  / v:identifier "(" args:arglist ") {return {tag:"call", name:v, args:args};}
+  / v:identifier "(" args:arglist ")" {return {tag:"call", name:v, args:args};}
   / "(" ws expr:expression ws ")" {return expr;}
 
 comma_expression = "," ws expr:expression {return expr;}

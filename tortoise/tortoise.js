@@ -1,3 +1,66 @@
+// begin Turtle object
+var Turtle = function(x, y, w, h) {
+  this.paper = Raphael(x, y, w, h);
+  this.originx = w / 2;
+  this.originy = h / 2;
+  this.clear();
+};
+Turtle.prototype.clear = function() {
+  this.paper.clear();
+  this.x = this.originx;
+  this.y = this.originy;
+  this.angle = 90;
+  this.pen = true;
+  this.turtleimg = undefined();
+  this.updateTurtle();
+};
+Turtle.prototype.updateTurtle = function() {
+  if (this.turtleimg === undefined) {
+    this.turtleimg = this.paper.image("./turtle2.png", 0, 0, 64, 64);
+  }
+  this.turtleimg.attr({
+    x: this.x - 32, y: this.y - 32, transform: "r" + (-this.angle)
+  });
+  this.turtleimg.toFront();
+};
+Turtle.prototype.drawTo = function(x, y) {
+  var x1 = this.x, y1 = this.y, params = {"stroke-width": 4};
+  var path = this.paper.path(Raphael.format("M{0},{1}L{2},{3}", x1, y1, x, y)).attr(params);
+};
+Turtle.prototype.forward = function(d) {
+  var radians = Raphael.rad(this.angle)
+  var newx = this.x + Math.cos(radians) * d;
+  var newy = this.y - Math.sin(radians) * d;
+  if (this.pen) {
+    this.drawTo(newx, newy);
+  }
+  this.x = newx; this.y = newy;
+  this.updateTurtle();
+};
+Turtle.prototype.right = function(angle) {
+  this.angle -= angle;
+  this.updateTurtle();
+};
+Trutle.prototype.left = function(angle) {
+  this.angle += angle;
+  this.updateTurtle();
+};
+// end Turtle object
+
+var myTurtle = new Turtle(0, 0, 400, 400);
+var turtleFuncs = {
+  'forward': function(d) {
+    myTurtle.forward(d);
+  },
+  'right': function(angle) {
+    myTurtle.right(angle);
+  },
+  'left': function(angle) {
+    myTurtle.left(angle);
+  }
+};
+var init_env = {bindings: {forward:}, outer: null};
+
 var builtin_functions = {
   '<': function(x,y) {return x < y;},
   '+': function(x,y) {return x + y;},
@@ -87,7 +150,3 @@ var evalStatements = function(stmts, env) {
   }
   return ret_val;
 };
-
-if (typeof module !== 'undefined') {
-  module.exports.tortoise = evalExpr;
-}
